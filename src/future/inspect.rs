@@ -21,7 +21,7 @@ pub fn new<A, F>(future: A, f: F) -> Inspect<A, F>
 
 impl<A, F> Future for Inspect<A, F>
     where A: Future,
-          F: FnOnce(&A::Item) -> (),
+          F: FnOnce() -> (),
 {
     type Item = A::Item;
     type Error = A::Error;
@@ -30,7 +30,7 @@ impl<A, F> Future for Inspect<A, F>
         match self.future.poll() {
             Ok(Async::NotReady) => Ok(Async::NotReady),
             Ok(Async::Ready(e)) => {
-                (self.f.take().expect("cannot poll Inspect twice"))(&e);
+                (self.f.take().expect("cannot poll Inspect twice"))();
                 Ok(Async::Ready(e))
             },
             Err(e) => Err(e),

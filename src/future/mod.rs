@@ -904,7 +904,7 @@ pub trait Future {
     /// assert_eq!(new_future.wait(), Ok(1));
     /// ```
     fn inspect<F>(self, f: F) -> Inspect<Self, F>
-        where F: FnOnce(&Self::Item) -> (),
+        where F: FnOnce() -> (),
               Self: Sized,
     {
         assert_future::<Self::Item, Self::Error, _>(inspect::new(self, f))
